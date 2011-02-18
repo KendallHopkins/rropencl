@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE55CEB6130F365400058186 /* helloworld.cl in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE737C11130EF08800C2AD29 /* helloworld.cl */; };
+		BE55CEB7130F365700058186 /* helloworld in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE737C13130EF12400C2AD29 /* helloworld */; };
 		BE737C1A130EF2D500C2AD29 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEBDE386130ED84B00B603CD /* Foundation.framework */; };
 		BE737C1D130EF2D500C2AD29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE737C1C130EF2D500C2AD29 /* main.m */; };
 		BE737C24130EF31B00C2AD29 /* RROpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEBDE33F130ED81700B603CD /* RROpenCL.framework */; };
@@ -44,6 +46,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		BE55CEB5130F364E00058186 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				BE55CEB6130F365400058186 /* helloworld.cl in CopyFiles */,
+				BE55CEB7130F365700058186 /* helloworld in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE737C16130EF2D500C2AD29 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -56,8 +69,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BE737C11130EF08800C2AD29 /* helloworld.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; name = helloworld.cl; path = ../../../Desktop/RROpenCL/RROpenCLTests/helloworld.cl; sourceTree = "<group>"; };
-		BE737C13130EF12400C2AD29 /* helloworld */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = helloworld; path = ../../../Desktop/RROpenCL/RROpenCLTests/helloworld; sourceTree = "<group>"; };
+		BE737C11130EF08800C2AD29 /* helloworld.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = helloworld.cl; sourceTree = "<group>"; };
+		BE737C13130EF12400C2AD29 /* helloworld */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = helloworld; sourceTree = "<group>"; };
 		BE737C18130EF2D500C2AD29 /* RROpenCLCompiler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RROpenCLCompiler; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE737C1C130EF2D500C2AD29 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BE737C1F130EF2D500C2AD29 /* RROpenCLCompiler-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RROpenCLCompiler-Prefix.pch"; sourceTree = "<group>"; };
@@ -281,6 +294,7 @@
 				BEBDE34F130ED81700B603CD /* Sources */,
 				BEBDE350130ED81700B603CD /* Frameworks */,
 				BEBDE351130ED81700B603CD /* Resources */,
+				BE55CEB5130F364E00058186 /* CopyFiles */,
 				BEBDE352130ED81700B603CD /* ShellScript */,
 			);
 			buildRules = (
