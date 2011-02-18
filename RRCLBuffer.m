@@ -24,17 +24,19 @@
 //------------------------------------------------------------------------------
 
 #import "RRCLBuffer.h"
+#import "RRCLContext.h"
 
 @implementation RRCLBuffer
 
 // designated initialiser
-- (id)initWithContext:(cl_context)aContext flags:(cl_mem_flags)flags size:(size_t)size hostPtr:(void *)hostPtr
+- (id)initWithContext:(RRCLContext *)aContext flags:(cl_mem_flags)flags size:(size_t)size_ hostPtr:(void *)hostPtr
 {
 	self = [super init];
 	if (self)
 	{
 		cl_int errcode;
-		mem = clCreateBuffer(aContext, flags, size, hostPtr, &errcode);
+		size = size_;
+		mem = clCreateBuffer([aContext context], flags, size, hostPtr, &errcode);
 		if (NULL == mem)
 		{
 			[self release];
@@ -43,22 +45,27 @@
 	}
 	return self;
 }
-- (id)initReadWriteWithContext:(cl_context)aContext size:(size_t)size
+- (id)initReadWriteWithContext:(RRCLContext *)aContext size:(size_t)size_
 {
-	return [self initWithContext:aContext flags:CL_MEM_READ_WRITE size:size hostPtr:NULL];
+	return [self initWithContext:aContext flags:CL_MEM_READ_WRITE size:size_ hostPtr:NULL];
 }
-- (id)initWriteOnlyWithContext:(cl_context)aContext size:(size_t)size
+- (id)initWriteOnlyWithContext:(RRCLContext *)aContext size:(size_t)size_
 {
-	return [self initWithContext:aContext flags:CL_MEM_WRITE_ONLY size:size hostPtr:NULL];
+	return [self initWithContext:aContext flags:CL_MEM_WRITE_ONLY size:size_ hostPtr:NULL];
 }
-- (id)initReadOnlyWithContext:(cl_context)aContext size:(size_t)size
+- (id)initReadOnlyWithContext:(RRCLContext *)aContext size:(size_t)size_
 {
-	return [self initWithContext:aContext flags:CL_MEM_READ_ONLY size:size hostPtr:NULL];
+	return [self initWithContext:aContext flags:CL_MEM_READ_ONLY size:size_ hostPtr:NULL];
 }
 
 - (cl_mem)mem
 {
 	return mem;
+}
+
+- (size_t)size
+{
+	return size;
 }
 
 - (void)dealloc

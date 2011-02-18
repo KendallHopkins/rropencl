@@ -38,15 +38,15 @@
 
 - (cl_kernel)kernel;
 
-- (cl_int)setArg:(cl_uint)argIndex toBuffer:(RRCLBuffer *)aBuffer;
+- (void)setArg:(cl_uint)argIndex toValue:(const void *)value withSize:(size_t)size;
+- (void)setArg:(cl_uint)argIndex toData:(NSData *)aData;
+- (void)setArg:(cl_uint)argIndex toBuffer:(RRCLBuffer *)aBuffer;
+- (void)setArgArray:(NSArray *)argArray;
 
 //------------------------------------------------------------------------- Info
 
 - (NSString *)name;
 - (cl_uint)numberOfArgs;
-- (cl_uint)referenceCount;
-- (cl_context)context;
-- (RRCLProgram *)program;
 
 //-------------------------------------------------------------- Work Group Info
 

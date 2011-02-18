@@ -24,6 +24,8 @@
 
 #import "RRCLProgram.h"
 #import "RRCLKernel.h"
+#import "RRCLContext.h"
+#import "RRCLDevice.h"
 
 @implementation RRCLProgram
 
@@ -64,28 +66,65 @@ static void RemoveWrapperForProgram(cl_program program)
 
 + (RRCLProgram *)wrapperForProgram:(cl_program)program
 {
-	RRCLProgram *wrapper;
+	RRCLProgram *wrapper = nil;
 	if (programs == nil || (wrapper = [programs objectForKey:(id)program]) == nil)
 	{
-		wrapper = [[[self class] alloc] initWithProgram:program];
+		wrapper = [[[[self class] alloc] initWithProgram:program] autorelease];
 	}
 	return wrapper;
 }
 
-- (id)initWithSource:(NSString *)source inContext:(cl_context)aContext
+- (id)initWithSource:(NSString *)source inContext:(RRCLContext *)aContext
 {
 	self = [super init];
 	if (self)
 	{
 		cl_int errcode;
 		const char *string = [source cStringUsingEncoding:NSASCIIStringEncoding];
-		program = clCreateProgramWithSource(aContext, 1, &string, NULL, &errcode);
+		program = clCreateProgramWithSource([aContext context], 1, &string, NULL, &errcode);
 		if (CL_SUCCESS != errcode)
 		{
 			[self release];
 			self = nil;
+		} else {
+			SetWrapperForProgram(self, program);
 		}
-		SetWrapperForProgram(self, program);
+	}
+	return self;
+}
+
+- (id)initWithBinarys:(NSArray *)binarys forDevices:(NSArray *)devices inContext:(RRCLContext *)aContext
+{
+	if( [binarys count] != [devices count] ) {
+		[self release];
+		self = nil;
+	}
+	
+	self = [super init];
+	if (self)
+	{
+		cl_int errcode;
+		cl_uint binary_count = (cl_uint)[binarys count];
+		cl_device_id device_array[binary_count];
+		size_t binary_size_array[binary_count];
+		cl_int binary_status_array[binary_count];
+		const unsigned char * binary_array[binary_count];
+		for( int i = 0; i < binary_count; i++ ) {
+			RRCLDevice * device = [devices objectAtIndex:i];
+			device_array[i] = [device deviceID];
+			NSData * binary = [binarys objectAtIndex:i];
+			binary_size_array[i] = [binary length];
+			binary_array[i] = [binary bytes];
+		}
+		
+		program = clCreateProgramWithBinary([aContext context], binary_count, device_array, binary_size_array, binary_array, binary_status_array, &errcode);
+		if (CL_SUCCESS != errcode)
+		{
+			[self release];
+			self = nil;
+		} else {
+			SetWrapperForProgram(self, program);
+		}
 	}
 	return self;
 }
@@ -109,27 +148,9 @@ static void RemoveWrapperForProgram(cl_program program)
 }
 
 //------------------------------------------------------------------------------
-#pragma mark                                                                Info
+#pragma mark																Info
 //------------------------------------------------------------------------------
 
-- (cl_uint)referenceCount
-{
-	cl_uint referenceCount;
-	if (CL_SUCCESS != clGetProgramInfo(program, CL_PROGRAM_REFERENCE_COUNT, sizeof(referenceCount), &referenceCount, NULL))
-	{
-		return 0;
-	}
-	return referenceCount;
-}
-- (cl_context)context
-{
-	cl_context context;
-	if (CL_SUCCESS != clGetProgramInfo(program, CL_PROGRAM_CONTEXT, sizeof(context), &context, NULL))
-	{
-		return NULL;
-	}
-	return context;
-}
 - (cl_uint)numberOfDevices
 {
 	cl_uint numberOfDevices;
@@ -140,8 +161,36 @@ static void RemoveWrapperForProgram(cl_program program)
 	return numberOfDevices;
 }
 
+- (NSArray *)binarys
+{
+	cl_uint numberOfDevices = [self numberOfDevices];
+	size_t binarySizes[numberOfDevices];
+	if (CL_SUCCESS != clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t)*numberOfDevices, binarySizes, NULL))
+	{
+		return nil;
+	}
+	
+	NSMutableArray * binarys_array = [NSMutableArray arrayWithCapacity:numberOfDevices];
+	unsigned char * binarys[numberOfDevices];
+	for( int i = 0; i < numberOfDevices; i++ ) {
+		size_t binarySize = binarySizes[i];
+		binarys[i] = (unsigned char *)malloc(binarySize);
+	}
+	
+	if (CL_SUCCESS != clGetProgramInfo(program, CL_PROGRAM_BINARIES, sizeof(unsigned char *)*numberOfDevices, binarys, NULL))
+	{
+		return nil;
+	}
+	for( int i = 0; i < numberOfDevices; i++ ) {
+		size_t binarySize = binarySizes[i];
+		unsigned char * binary = binarys[i];
+		[binarys_array addObject:[NSData dataWithBytes:binary length:binarySize]];
+	}
+	return binarys_array;
+}
+
 //------------------------------------------------------------------------------
-#pragma mark                                                          Build Info
+#pragma mark														  Build Info
 //------------------------------------------------------------------------------
 
 - (cl_build_status)statusForDeviceID:(cl_device_id)deviceID
@@ -160,6 +209,7 @@ static void RemoveWrapperForProgram(cl_program program)
 	}
 	return status;
 }
+
 - (NSString *)stringForBuildInfo:(cl_program_build_info)buildInfo deviceID:(cl_device_id)deviceID
 {
 	size_t size;
@@ -174,10 +224,12 @@ static void RemoveWrapperForProgram(cl_program program)
 	}
 	return [NSString stringWithCString:info encoding:NSASCIIStringEncoding];
 }
+
 - (NSString *)optionsForDeviceID:(cl_device_id)deviceID
 {
 	return [self stringForBuildInfo:CL_PROGRAM_BUILD_OPTIONS deviceID:deviceID];
 }
+
 - (NSString *)logForDeviceID:(cl_device_id)deviceID
 {
 	return [self stringForBuildInfo:CL_PROGRAM_BUILD_LOG deviceID:deviceID];

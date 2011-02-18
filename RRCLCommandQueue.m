@@ -25,16 +25,18 @@
 #import "RRCLCommandQueue.h"
 #import "RRCLBuffer.h"
 #import "RRCLKernel.h"
+#import "RRCLContext.h"
+#import "RRCLDevice.h"
 
 @implementation RRCLCommandQueue
 
-- (id)initWithContext:(cl_context)aContext deviceID:(cl_device_id)aDeviceID
+- (id)initWithContext:(RRCLContext *)aContext device:(RRCLDevice *)aDevice
 {
 	self = [super init];
 	if (self)
 	{
 		cl_int errcode;
-		commandQueue = clCreateCommandQueue(aContext, aDeviceID, 0, &errcode);
+		commandQueue = clCreateCommandQueue([aContext context], [aDevice deviceID], 0, &errcode);
 		if (CL_SUCCESS != errcode)
 		{
 			[self release];
@@ -80,9 +82,15 @@
 {
 	return clFlush(commandQueue);
 }
+
 - (cl_int)finish
 {
 	return clFinish(commandQueue);
+}
+
+- (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking
+{
+	return [self enqueueReadBuffer:aBuffer blocking:blocking offset:0 length:[aBuffer size]];
 }
 
 - (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset length:(size_t)cb

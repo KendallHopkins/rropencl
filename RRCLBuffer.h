@@ -27,16 +27,20 @@
 
 #import <OpenCL/OpenCL.h>
 
+@class RRCLContext;
+
 @interface RRCLBuffer : NSObject
 {
 	cl_mem mem;
+	size_t size;
 }
 
-- (id)initWithContext:(cl_context)aContext flags:(cl_mem_flags)flags size:(size_t)size hostPtr:(void *)hostPtr;
-- (id)initReadWriteWithContext:(cl_context)aContext size:(size_t)size;
-- (id)initWriteOnlyWithContext:(cl_context)aContext size:(size_t)size;
-- (id)initReadOnlyWithContext:(cl_context)aContext size:(size_t)size;
+- (id)initWithContext:(RRCLContext *)aContext flags:(cl_mem_flags)flags size:(size_t)size hostPtr:(void *)hostPtr;
+- (id)initReadWriteWithContext:(RRCLContext *)aContext size:(size_t)size;
+- (id)initWriteOnlyWithContext:(RRCLContext *)aContext size:(size_t)size;
+- (id)initReadOnlyWithContext:(RRCLContext *)aContext size:(size_t)size;
 
 - (cl_mem)mem;
+- (size_t)size;
 
 @end

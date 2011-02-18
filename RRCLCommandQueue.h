@@ -28,19 +28,23 @@
 
 @class RRCLBuffer;
 @class RRCLKernel;
+@class RRCLContext;
+@class RRCLDevice;
 
 @interface RRCLCommandQueue : NSObject
 {
 	cl_command_queue commandQueue;
 }
 
-- (id)initWithContext:(cl_context)aContext deviceID:(cl_device_id)aDeviceID;
+- (id)initWithContext:(RRCLContext *)aContext device:(RRCLDevice *)aDevice;
 
 - (cl_context)context;
 - (cl_device_id)deviceID;
 - (cl_uint)referenceCount;
 
+- (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking;
 - (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset length:(size_t)cb;
+
 	// Reads from a buffer object to host memory. The buffer and command queue
 	// must belong to the same context.
 - (cl_int)enqueueWriteBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset data:(NSData *)data;

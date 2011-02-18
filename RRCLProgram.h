@@ -27,6 +27,7 @@
 #import <OpenCL/OpenCL.h>
 
 @class RRCLKernel;
+@class RRCLContext;
 
 @interface RRCLProgram : NSObject
 {
@@ -35,21 +36,16 @@
 
 + (RRCLProgram *)wrapperForProgram:(cl_program)program;
 
-- (id)initWithSource:(NSString *)source inContext:(cl_context)aContext;
+- (id)initWithSource:(NSString *)source inContext:(RRCLContext *)aContext;
+- (id)initWithBinarys:(NSArray *)binarys forDevices:(NSArray *)devices inContext:(RRCLContext *)aContext;
 
 - (cl_int)build;
 	// Building a program answers the build error code.
 
 //------------------------------------------------------------------------- Info
 
-- (cl_uint)referenceCount;
-	// Returns the program reference count. However, take care because the
-	// OpenCL 1.0.43 specification warns, "The reference count returned should
-	// be considered immediately stale. It is unsuitable for general use in
-	// applications. This feature is provided for identifying memory leaks." See
-	// p. 95.
-- (cl_context)context;
 - (cl_uint)numberOfDevices;
+- (NSArray *)binarys;
 
 //------------------------------------------------------------------- Build Info
 

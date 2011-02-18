@@ -29,6 +29,7 @@
 @class RRCLCommandQueue;
 @class RRCLProgram;
 @class RRCLBuffer;
+@class RRCLDevice;
 
 /*!
  * The RROpenCL framework does not overlay an additional layer of abstraction on
@@ -53,14 +54,16 @@
 	cl_context context;
 }
 
-- (id)initWithDeviceIDs:(NSArray *)deviceIDs;
+- (id)initWithDevices:(NSArray *)deviceIDs;
 
-- (RRCLCommandQueue *)commandQueueForDeviceID:(cl_device_id)aDeviceID;
+- (RRCLCommandQueue *)commandQueueForDevice:(RRCLDevice *)aDevice;
 
 - (RRCLProgram *)programWithSource:(NSString *)source;
 
 - (RRCLBuffer *)readWriteBufferWithSize:(size_t)size;
 - (RRCLBuffer *)writeOnlyBufferWithSize:(size_t)size;
 - (RRCLBuffer *)readOnlyBufferWithSize:(size_t)size;
+
+- (cl_context)context;
 
 @end

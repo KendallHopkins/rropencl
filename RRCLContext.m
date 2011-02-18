@@ -32,7 +32,7 @@ void RRCLContextNotify(const char *errinfo, const void *private_info, size_t cb,
 
 @implementation RRCLContext
 
-- (id)initWithDeviceIDs:(NSArray *)deviceIDs
+- (id)initWithDevices:(NSArray *)deviceIDs
 {
 	self = [super init];
 	if (self)
@@ -44,7 +44,7 @@ void RRCLContextNotify(const char *errinfo, const void *private_info, size_t cb,
 			ids[index] = [[deviceIDs objectAtIndex:index] deviceID];
 		}
 		cl_int errcode;
-		context = clCreateContext(NULL, count, ids, RRCLContextNotify, self, &errcode);
+		context = clCreateContext(NULL, (cl_uint)count, ids, RRCLContextNotify, self, &errcode);
 		if (CL_SUCCESS != errcode)
 		{
 			[self release];
@@ -65,27 +65,32 @@ void RRCLContextNotify(const char *errinfo, const void *private_info, size_t cb,
 	[super finalize];
 }
 
-- (RRCLCommandQueue *)commandQueueForDeviceID:(cl_device_id)aDeviceID
+- (RRCLCommandQueue *)commandQueueForDevice:(RRCLDevice *)aDevice
 {
-	return [[[RRCLCommandQueue alloc] initWithContext:context deviceID:aDeviceID] autorelease];
+	return [[[RRCLCommandQueue alloc] initWithContext:self device:aDevice] autorelease];
 }
 
 - (RRCLProgram *)programWithSource:(NSString *)source
 {
-	return [[[RRCLProgram alloc] initWithSource:source inContext:context] autorelease];
+	return [[[RRCLProgram alloc] initWithSource:source inContext:self] autorelease];
 }
 
 - (RRCLBuffer *)readWriteBufferWithSize:(size_t)size
 {
-	return [[[RRCLBuffer alloc] initReadWriteWithContext:context size:size] autorelease];
+	return [[[RRCLBuffer alloc] initReadWriteWithContext:self size:size] autorelease];
 }
 - (RRCLBuffer *)writeOnlyBufferWithSize:(size_t)size
 {
-	return [[[RRCLBuffer alloc] initWriteOnlyWithContext:context size:size] autorelease];
+	return [[[RRCLBuffer alloc] initWriteOnlyWithContext:self size:size] autorelease];
 }
 - (RRCLBuffer *)readOnlyBufferWithSize:(size_t)size
 {
-	return [[[RRCLBuffer alloc] initReadOnlyWithContext:context size:size] autorelease];
+	return [[[RRCLBuffer alloc] initReadOnlyWithContext:self size:size] autorelease];
+}
+
+- (cl_context)context
+{
+	return context;
 }
 
 - (void)notifyWithErrorInfo:(NSString *)errInfo data:(NSData *)data

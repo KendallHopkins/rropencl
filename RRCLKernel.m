@@ -54,20 +54,46 @@
 	clReleaseKernel(kernel);
 	[super dealloc];
 }
+
 - (void)finalize
 {
 	clReleaseKernel(kernel);
 	[super finalize];
 }
 
-- (cl_int)setArg:(cl_uint)argIndex toBuffer:(RRCLBuffer *)aBuffer
+- (void)setArg:(cl_uint)argIndex toValue:(const void *)value withSize:(size_t)size {
+	cl_int result = clSetKernelArg(kernel, argIndex, size, value);	   
+	NSAssert(result == CL_SUCCESS, @"%d", result);
+}
+
+- (void)setArg:(cl_uint)argIndex toData:(NSData *)aData
+{
+	[self setArg:argIndex toValue:[aData bytes] withSize:[aData length]];
+}
+
+- (void)setArg:(cl_uint)argIndex toBuffer:(RRCLBuffer *)aBuffer
 {
 	cl_mem mem = [aBuffer mem];
-	return clSetKernelArg(kernel, argIndex, sizeof(mem), &mem);
+	[self setArg:argIndex toValue:&mem withSize:sizeof(mem)];
+}
+
+- (void)setArgArray:(NSArray *)argArray {
+	NSUInteger argArrayCount = [argArray count];
+	for( int i = 0; i < argArrayCount; i++ ) {
+		id argObject = [argArray objectAtIndex:i];
+		Class argObjectClass = [argObject class];
+		if( [argObjectClass isSubclassOfClass:[RRCLBuffer class]] ) {
+			[self setArg:i toBuffer:argObject];
+		} else if( [argObjectClass isSubclassOfClass:[NSData class]] ) {
+			[self setArg:i toData:argObject];
+		} else {
+			[NSException raise:NSInvalidArgumentException format:@"bad class name: %@", argObjectClass];
+		}
+	}
 }
 
 //------------------------------------------------------------------------------
-#pragma mark                                                                Info
+#pragma mark																Info
 //------------------------------------------------------------------------------
 
 - (NSString *)name
@@ -84,6 +110,7 @@
 	}
 	return [NSString stringWithCString:info encoding:NSASCIIStringEncoding];
 }
+
 - (cl_uint)numberOfArgs
 {
 	cl_uint numberOfArgs;
@@ -93,36 +120,9 @@
 	}
 	return numberOfArgs;
 }
-- (cl_uint)referenceCount
-{
-	cl_uint referenceCount;
-	if (CL_SUCCESS != clGetKernelInfo(kernel, CL_KERNEL_REFERENCE_COUNT, sizeof(referenceCount), &referenceCount, NULL))
-	{
-		return 0;
-	}
-	return referenceCount;
-}
-- (cl_context)context
-{
-	cl_context context;
-	if (CL_SUCCESS != clGetKernelInfo(kernel, CL_KERNEL_CONTEXT, sizeof(context), &context, NULL))
-	{
-		return NULL;
-	}
-	return context;
-}
-- (RRCLProgram *)program
-{
-	cl_program program;
-	if (CL_SUCCESS != clGetKernelInfo(kernel, CL_KERNEL_PROGRAM, sizeof(program), &program, NULL))
-	{
-		return NULL;
-	}
-	return [RRCLProgram wrapperForProgram:program];
-}
 
 //------------------------------------------------------------------------------
-#pragma mark                                                     Work Group Info
+#pragma mark													 Work Group Info
 //------------------------------------------------------------------------------
 
 - (size_t)workGroupSizeForDeviceID:(cl_device_id)deviceID
