@@ -31,7 +31,7 @@
 
 @interface RRCLProgram : NSObject
 {
-	cl_program program;
+	cl_program clProgram;
 }
 
 - (id)initWithSource:(NSString *)source inContext:(RRCLContext *)aContext;
@@ -39,11 +39,12 @@
 
 - (cl_int)build;
 	// Building a program answers the build error code.
+- (NSArray *)binarys;
+	// Returns an array of NSData containing the binarys for each device in the program's context
 
 //------------------------------------------------------------------------- Info
 
 - (cl_uint)numberOfDevices;
-- (NSArray *)binarys;
 
 //------------------------------------------------------------------- Build Info
 
@@ -51,6 +52,6 @@
 - (NSString *)optionsForDeviceID:(cl_device_id)deviceID;
 - (NSString *)logForDeviceID:(cl_device_id)deviceID;
 
-- (RRCLKernel *)kernelWithName:(NSString *)kernelName;
+- (cl_program)clProgram;
 
 @end

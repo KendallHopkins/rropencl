@@ -32,23 +32,21 @@ void RRCLContextNotify(const char *errinfo, const void *private_info, size_t cb,
 
 @implementation RRCLContext
 
-- (id)initWithDevices:(NSArray *)deviceIDs
+- (id)initWithDevices:(NSArray *)devices
 {
 	self = [super init];
 	if (self)
 	{
-		NSUInteger count = [deviceIDs count];
+		NSUInteger count = [devices count];
 		cl_device_id ids[count];
-		for (NSUInteger index = 0; index < count; index++)
-		{
-			ids[index] = [[deviceIDs objectAtIndex:index] deviceID];
+		for (NSUInteger index = 0; index < count; index++) {
+			ids[index] = [[devices objectAtIndex:index] clDeviceId];
 		}
 		cl_int errcode;
-		context = clCreateContext(NULL, (cl_uint)count, ids, RRCLContextNotify, self, &errcode);
-		if (CL_SUCCESS != errcode)
-		{
+		clContext = clCreateContext(NULL, (cl_uint)count, ids, RRCLContextNotify, self, &errcode);
+		if (CL_SUCCESS != errcode) {
 			[self release];
-			self = nil;
+			return nil;
 		}
 	}
 	return self;
@@ -56,23 +54,18 @@ void RRCLContextNotify(const char *errinfo, const void *private_info, size_t cb,
 
 - (void)dealloc
 {
-	clReleaseContext(context);
+	clReleaseContext(clContext);
 	[super dealloc];
 }
 - (void)finalize
 {
-	clReleaseContext(context);
+	clReleaseContext(clContext);
 	[super finalize];
 }
 
 - (RRCLCommandQueue *)commandQueueForDevice:(RRCLDevice *)aDevice
 {
 	return [[[RRCLCommandQueue alloc] initWithContext:self device:aDevice] autorelease];
-}
-
-- (RRCLProgram *)programWithSource:(NSString *)source
-{
-	return [[[RRCLProgram alloc] initWithSource:source inContext:self] autorelease];
 }
 
 - (RRCLBuffer *)readWriteBufferWithSize:(size_t)size
@@ -88,9 +81,9 @@ void RRCLContextNotify(const char *errinfo, const void *private_info, size_t cb,
 	return [[[RRCLBuffer alloc] initReadOnlyWithContext:self size:size] autorelease];
 }
 
-- (cl_context)context
+- (cl_context)clContext
 {
-	return context;
+	return clContext;
 }
 
 - (void)notifyWithErrorInfo:(NSString *)errInfo data:(NSData *)data

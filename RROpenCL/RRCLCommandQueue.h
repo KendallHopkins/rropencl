@@ -33,25 +33,26 @@
 
 @interface RRCLCommandQueue : NSObject
 {
-	cl_command_queue commandQueue;
+	cl_command_queue clCommandQueue;
+	RRCLContext * context;
+	RRCLDevice * device;
 }
 
 - (id)initWithContext:(RRCLContext *)aContext device:(RRCLDevice *)aDevice;
 
-- (cl_context)context;
-- (cl_device_id)deviceID;
-- (cl_uint)referenceCount;
+- (RRCLContext *)context;
+- (RRCLDevice *)device;
 
 - (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking;
 - (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset length:(size_t)cb;
 
 	// Reads from a buffer object to host memory. The buffer and command queue
 	// must belong to the same context.
-- (cl_int)enqueueWriteBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset data:(NSData *)data;
-- (cl_int)enqueueNDRangeKernel:(RRCLKernel *)aKernel globalWorkSize:(size_t)globalWorkSize;
-- (cl_int)enqueueNDRangeKernel:(RRCLKernel *)aKernel globalWorkSize:(size_t)globalWorkSize localWorkSize:(size_t)localWorkSize;
+- (void)enqueueWriteBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset data:(NSData *)data;
+- (void)enqueueNDRangeKernel:(RRCLKernel *)aKernel globalWorkSize:(size_t)globalWorkSize;
+- (void)enqueueNDRangeKernel:(RRCLKernel *)aKernel globalWorkSize:(size_t)globalWorkSize localWorkSize:(size_t)localWorkSize;
 
-- (cl_int)flush;
-- (cl_int)finish;
+- (void)flush;
+- (void)finish;
 
 @end

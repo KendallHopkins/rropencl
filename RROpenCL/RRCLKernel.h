@@ -31,16 +31,13 @@
 
 @interface RRCLKernel : NSObject
 {
-	cl_kernel kernel;
+	cl_kernel clKernel;
 }
 
-- (id)initWithKernelName:(NSString *)kernelName inProgram:(cl_program)aProgram;
+- (id)initWithKernelName:(NSString *)kernelName inProgram:(RRCLProgram *)aProgram;
 
-- (cl_kernel)kernel;
-
-- (void)setArg:(cl_uint)argIndex toValue:(const void *)value withSize:(size_t)size;
-- (void)setArg:(cl_uint)argIndex toData:(NSData *)aData;
-- (void)setArg:(cl_uint)argIndex toBuffer:(RRCLBuffer *)aBuffer;
+- (void)setArg:(NSUInteger)argIndex toData:(NSData *)aData;
+- (void)setArg:(NSUInteger)argIndex toBuffer:(RRCLBuffer *)aBuffer;
 - (void)setArgArray:(NSArray *)argArray;
 
 //------------------------------------------------------------------------- Info
@@ -51,5 +48,7 @@
 //-------------------------------------------------------------- Work Group Info
 
 - (size_t)workGroupSizeForDeviceID:(cl_device_id)deviceID;
+
+- (cl_kernel)clKernel;
 
 @end

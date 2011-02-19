@@ -28,3 +28,5 @@
 #import <RROpenCL/RRCLProgram.h>
 #import <RROpenCL/RRCLKernel.h>
 #import <RROpenCL/RRCLBuffer.h>
+#import <RROpenCL/RRCLEvent.h>
+#import <RROpenCL/RRCLException.h>

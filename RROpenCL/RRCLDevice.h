@@ -28,11 +28,22 @@
 
 @interface RRCLDevice : NSObject
 {
-	cl_device_id deviceID;
+	cl_device_id clDeviceId;
 }
 
-- (id)initWithDeviceID:(cl_device_id)aDeviceID;
-- (cl_device_id)deviceID;
++ (RRCLDevice *)defaultDevice;
+
++ (NSArray *)devicesForPlatform:(cl_platform_id)platformID type:(cl_device_type)deviceType;
+// Argument deviceType specifies a bit mask describing which types of
+// computing device you require, including: the host processor, the GPU, a
+// dedicated CL accelerator, the default CL device or all of them.
+//
+//	CL_DEVICE_TYPE_DEFAULT
+//	CL_DEVICE_TYPE_CPU
+//	CL_DEVICE_TYPE_GPU
+//	CL_DEVICE_TYPE_ACCELERATOR
+//	CL_DEVICE_TYPE_ALL
+//
 
 - (NSString *)stringForDeviceInfo:(cl_device_info)deviceInfo;
 - (NSString *)deviceName;
@@ -42,16 +53,6 @@
 - (NSString *)deviceVersion;
 - (NSString *)deviceExtensions;
 
-+ (NSArray *)devicesForPlatform:(cl_platform_id)platformID type:(cl_device_type)deviceType;
-	// Argument deviceType specifies a bit mask describing which types of
-	// computing device you require, including: the host processor, the GPU, a
-	// dedicated CL accelerator, the default CL device or all of them.
-	//
-	//	CL_DEVICE_TYPE_DEFAULT
-	//	CL_DEVICE_TYPE_CPU
-	//	CL_DEVICE_TYPE_GPU
-	//	CL_DEVICE_TYPE_ACCELERATOR
-	//	CL_DEVICE_TYPE_ALL
-	//
+- (cl_device_id)clDeviceId;
 
 @end

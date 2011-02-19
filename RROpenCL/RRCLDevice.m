@@ -23,36 +23,78 @@
 //------------------------------------------------------------------------------
 
 #import "RRCLDevice.h"
+#import "RRCLException.h"
+
+@interface RRCLDevice ()
+
+- (id)initWithDeviceID:(cl_device_id)aDeviceID;
+
+@end
 
 @implementation RRCLDevice
+
++ (RRCLDevice *)defaultDevice
+{
+	static RRCLDevice * defaultDevice = nil;
+	if( ! defaultDevice ) {
+		NSArray * deviceArray = [self devicesForPlatform:NULL type:CL_DEVICE_TYPE_DEFAULT];
+		defaultDevice = [deviceArray objectAtIndex:0];
+	}
+	return defaultDevice;
+}
+
++ (NSArray *)devicesForPlatform:(cl_platform_id)platformID type:(cl_device_type)deviceType
+{
+	cl_uint count;
+	cl_int errorCode;
+	errorCode = clGetDeviceIDs(platformID, deviceType, 0, NULL, &count);
+	
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+	
+	cl_device_id ids[count];
+	errorCode = clGetDeviceIDs(platformID, deviceType, count, ids, NULL);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+	
+	RRCLDevice * devices[count];
+	for (cl_uint index = 0; index < count; index++) {
+		devices[index] = [[RRCLDevice alloc] initWithDeviceID:ids[index]];
+	}
+	NSArray * answer = [NSArray arrayWithObjects:devices count:count];
+	for (cl_uint index = 0; index < count; index++) {
+		[devices[index] release];
+	}
+	return answer;
+}
 
 - (id)initWithDeviceID:(cl_device_id)aDeviceID
 {
 	self = [super init];
-	if (self)
-	{
-		deviceID = aDeviceID;
+	if (self) {
+		clDeviceId = aDeviceID;
 	}
 	return self;
 }
 
-- (cl_device_id)deviceID
+- (cl_device_id)clDeviceId
 {
-	return deviceID;
+	return clDeviceId;
 }
 
 - (NSString *)stringForDeviceInfo:(cl_device_info)deviceInfo
 {
 	size_t size;
-	if (CL_SUCCESS != clGetDeviceInfo(deviceID, deviceInfo, 0, NULL, &size))
-	{
-		return nil;
-	}
+	cl_int errorCode;
+	errorCode = clGetDeviceInfo(clDeviceId, deviceInfo, 0, NULL, &size);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+
 	char info[size];
-	if (CL_SUCCESS != clGetDeviceInfo(deviceID, deviceInfo, size, info, NULL))
-	{
-		return nil;
-	}
+	errorCode = clGetDeviceInfo(clDeviceId, deviceInfo, size, info, NULL);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+	
 	return [NSString stringWithCString:info encoding:NSASCIIStringEncoding];
 }
 - (NSString *)deviceName
@@ -82,31 +124,6 @@
 - (NSString *)description
 {
 	return [NSString stringWithFormat:@"OpenCL device name=%@ vendor=%@", [self deviceName], [self deviceVendor]];
-}
-
-+ (NSArray *)devicesForPlatform:(cl_platform_id)platformID type:(cl_device_type)deviceType
-{
-	cl_uint count;
-	if (CL_SUCCESS != clGetDeviceIDs(platformID, deviceType, 0, NULL, &count))
-	{
-		return nil;
-	}
-	cl_device_id ids[count];
-	if (CL_SUCCESS != clGetDeviceIDs(platformID, deviceType, count, ids, NULL))
-	{
-		return nil;
-	}
-	RRCLDevice *devices[count];
-	for (cl_uint index = 0; index < count; index++)
-	{
-		devices[index] = [[RRCLDevice alloc] initWithDeviceID:ids[index]];
-	}
-	NSArray *answer = [NSArray arrayWithObjects:devices count:count];
-	for (cl_uint index = 0; index < count; index++)
-	{
-		[devices[index] release];
-	}
-	return answer;
 }
 
 @end

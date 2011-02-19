@@ -26,6 +26,12 @@
 #import "RRCLBuffer.h"
 #import "RRCLContext.h"
 
+@interface RRCLBuffer ()
+
+- (id)initWithContext:(RRCLContext *)aContext flags:(cl_mem_flags)flags size:(size_t)size hostPtr:(void *)hostPtr;
+
+@end
+
 @implementation RRCLBuffer
 
 // designated initialiser
@@ -36,11 +42,11 @@
 	{
 		cl_int errcode;
 		size = size_;
-		mem = clCreateBuffer([aContext context], flags, size, hostPtr, &errcode);
-		if (NULL == mem)
+		clMem = clCreateBuffer([aContext clContext], flags, size, hostPtr, &errcode);
+		if (CL_SUCCESS != errcode)
 		{
 			[self release];
-			self = nil;
+			return self;
 		}
 	}
 	return self;
@@ -58,9 +64,9 @@
 	return [self initWithContext:aContext flags:CL_MEM_READ_ONLY size:size_ hostPtr:NULL];
 }
 
-- (cl_mem)mem
+- (cl_mem)clMem
 {
-	return mem;
+	return clMem;
 }
 
 - (size_t)size
@@ -70,12 +76,12 @@
 
 - (void)dealloc
 {
-	clReleaseMemObject(mem);
+	clReleaseMemObject(clMem);
 	[super dealloc];
 }
 - (void)finalize
 {
-	clReleaseMemObject(mem);
+	clReleaseMemObject(clMem);
 	[super finalize];
 }
 

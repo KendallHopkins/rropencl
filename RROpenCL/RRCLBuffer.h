@@ -31,16 +31,15 @@
 
 @interface RRCLBuffer : NSObject
 {
-	cl_mem mem;
+	cl_mem clMem;
 	size_t size;
 }
 
-- (id)initWithContext:(RRCLContext *)aContext flags:(cl_mem_flags)flags size:(size_t)size hostPtr:(void *)hostPtr;
 - (id)initReadWriteWithContext:(RRCLContext *)aContext size:(size_t)size;
 - (id)initWriteOnlyWithContext:(RRCLContext *)aContext size:(size_t)size;
 - (id)initReadOnlyWithContext:(RRCLContext *)aContext size:(size_t)size;
 
-- (cl_mem)mem;
+- (cl_mem)clMem;
 - (size_t)size;
 
 @end

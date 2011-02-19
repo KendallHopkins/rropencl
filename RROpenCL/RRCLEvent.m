@@ -8,22 +8,55 @@
 
 #import "RRCLEvent.h"
 
+#import "RRCLException.h"
 
 @implementation RRCLEvent
 
-- (id)init
++ (void)waitForArrayToFinish:(NSArray *)eventArray
+{
+    NSUInteger eventArrayCount = [eventArray count];
+    cl_event clEventArray[eventArrayCount];
+    for( int i = 0; i < eventArrayCount; i++ ) {
+        RRCLEvent * currentEvent = [eventArray objectAtIndex:i];
+        clEventArray[i] = [currentEvent clEvent];
+    }
+    cl_int errorCode = clWaitForEvents((cl_uint)eventArrayCount, clEventArray);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+}
+
+- (id)initWithCLEvent:(cl_event)event_
 {
     self = [super init];
     if (self) {
-        // Initialization code here.
+        clEvent = event_;
     }
     
     return self;
 }
 
+- (void)waitToFinish
+{
+    cl_int errorCode = clWaitForEvents(1, &clEvent);
+    if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+}
+
+- (cl_event)clEvent
+{
+    return clEvent;
+}
+
 - (void)dealloc
 {
-    [super dealloc];
+	clReleaseEvent(clEvent);
+	[super dealloc];
+}
+
+- (void)finalize
+{
+	clReleaseEvent(clEvent);
+	[super finalize];
 }
 
 @end

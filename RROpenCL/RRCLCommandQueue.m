@@ -27,21 +27,22 @@
 #import "RRCLKernel.h"
 #import "RRCLContext.h"
 #import "RRCLDevice.h"
+#import "RRCLException.h"
 
 @implementation RRCLCommandQueue
 
 - (id)initWithContext:(RRCLContext *)aContext device:(RRCLDevice *)aDevice
 {
 	self = [super init];
-	if (self)
-	{
+	if (self) {
 		cl_int errcode;
-		commandQueue = clCreateCommandQueue([aContext context], [aDevice deviceID], 0, &errcode);
-		if (CL_SUCCESS != errcode)
-		{
+		clCommandQueue = clCreateCommandQueue([aContext clContext], [aDevice clDeviceId], 0, &errcode);
+		if (CL_SUCCESS != errcode) {
 			[self release];
-			self = nil;
+			return nil;
 		}
+		device = [aDevice retain];
+		context = [aContext retain];
 	}
 	return self;
 }
@@ -50,42 +51,14 @@
 #pragma mark                                                                Info
 //------------------------------------------------------------------------------
 
-- (cl_context)context
+- (RRCLContext *)context
 {
-	cl_context context;
-	if (CL_SUCCESS != clGetCommandQueueInfo(commandQueue, CL_QUEUE_CONTEXT, sizeof(context), &context, NULL))
-	{
-		return NULL;
-	}
 	return context;
 }
-- (cl_device_id)deviceID
-{
-	cl_device_id deviceID;
-	if (CL_SUCCESS != clGetCommandQueueInfo(commandQueue, CL_QUEUE_DEVICE, sizeof(deviceID), &deviceID, NULL))
-	{
-		return NULL;
-	}
-	return deviceID;
-}
-- (cl_uint)referenceCount
-{
-	cl_uint referenceCount;
-	if (CL_SUCCESS != clGetCommandQueueInfo(commandQueue, CL_QUEUE_REFERENCE_COUNT, sizeof(referenceCount), &referenceCount, NULL))
-	{
-		return 0;
-	}
-	return referenceCount;
-}
 
-- (cl_int)flush
+- (RRCLDevice *)device
 {
-	return clFlush(commandQueue);
-}
-
-- (cl_int)finish
-{
-	return clFinish(commandQueue);
+	return device;
 }
 
 - (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking
@@ -96,33 +69,57 @@
 - (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset length:(size_t)cb
 {
 	NSMutableData *data = [NSMutableData dataWithLength:cb];
-	if (CL_SUCCESS != clEnqueueReadBuffer(commandQueue, [aBuffer mem], blocking, offset, cb, [data mutableBytes], 0, NULL, NULL))
-	{
-		return nil;
-	}
+	cl_int errorCode = clEnqueueReadBuffer(clCommandQueue, [aBuffer clMem], blocking, offset, cb, [data mutableBytes], 0, NULL, NULL);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+
 	return data;
 }
-- (cl_int)enqueueWriteBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset data:(NSData *)data
+
+- (void)enqueueWriteBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset data:(NSData *)data
 {
-	return clEnqueueWriteBuffer(commandQueue, [aBuffer mem], blocking, offset, [data length], [data bytes], 0, NULL, NULL);
+	cl_int errorCode = clEnqueueWriteBuffer(clCommandQueue, [aBuffer clMem], blocking, offset, [data length], [data bytes], 0, NULL, NULL);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
 }
-- (cl_int)enqueueNDRangeKernel:(RRCLKernel *)aKernel globalWorkSize:(size_t)globalWorkSize
+
+- (void)enqueueNDRangeKernel:(RRCLKernel *)aKernel globalWorkSize:(size_t)globalWorkSize
 {
-	return clEnqueueNDRangeKernel(commandQueue, [aKernel kernel], 1, NULL, &globalWorkSize, NULL, 0, NULL, NULL);
+	cl_int errorCode = clEnqueueNDRangeKernel(clCommandQueue, [aKernel clKernel], 1, NULL, &globalWorkSize, NULL, 0, NULL, NULL);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
 }
-- (cl_int)enqueueNDRangeKernel:(RRCLKernel *)aKernel globalWorkSize:(size_t)globalWorkSize localWorkSize:(size_t)localWorkSize
+
+- (void)enqueueNDRangeKernel:(RRCLKernel *)aKernel globalWorkSize:(size_t)globalWorkSize localWorkSize:(size_t)localWorkSize
 {
-	return clEnqueueNDRangeKernel(commandQueue, [aKernel kernel], 1, NULL, &globalWorkSize, &localWorkSize, 0, NULL, NULL);
+	cl_int errorCode = clEnqueueNDRangeKernel(clCommandQueue, [aKernel clKernel], 1, NULL, &globalWorkSize, &localWorkSize, 0, NULL, NULL);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+}
+
+- (void)flush
+{
+	cl_int errorCode = clFlush(clCommandQueue);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
+}
+
+- (void)finish
+{
+	cl_int errorCode = clFinish(clCommandQueue);
+	if (CL_SUCCESS != errorCode)
+		[RRCLException raiseWithErrorCode:errorCode];
 }
 
 - (void)dealloc
 {
-	clReleaseCommandQueue(commandQueue);
+	clReleaseCommandQueue(clCommandQueue);
 	[super dealloc];
 }
+
 - (void)finalize
 {
-	clReleaseCommandQueue(commandQueue);
+	clReleaseCommandQueue(clCommandQueue);
 	[super finalize];
 }
 

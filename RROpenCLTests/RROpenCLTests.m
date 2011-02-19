@@ -53,7 +53,7 @@
 	NSArray * binarys = [programFromSource binarys];
 	RRCLProgram * programFromBinary = [[RRCLProgram alloc] initWithBinarys:binarys forDevices:[NSArray arrayWithObject:mainDevice] inContext:context];
 	[programFromBinary build];
-	RRCLKernel * addKernel = [programFromBinary kernelWithName:@"add"];
+	RRCLKernel * addKernel = [[[RRCLKernel alloc] initWithKernelName:@"add" inProgram:programFromBinary] autorelease];
 	[self _testAddKernel:addKernel];
 }
 
@@ -67,7 +67,7 @@
 		STFail(@"Fail to build helloworld.cl");
 		return;
 	}
-	RRCLKernel * addKernel = [programFromSource kernelWithName:@"add"];
+	RRCLKernel * addKernel = [[[RRCLKernel alloc] initWithKernelName:@"add" inProgram:programFromSource] autorelease];
 	[self _testAddKernel:addKernel];
 }
 
@@ -80,7 +80,7 @@
 		STFail(@"Fail to build helloworld.cl");
 		return;
 	}
-	RRCLKernel * addKernel = [programFromBinary kernelWithName:@"add"];
+	RRCLKernel * addKernel = [[[RRCLKernel alloc] initWithKernelName:@"add" inProgram:programFromBinary] autorelease];;
 	[self _testAddKernel:addKernel];
 }
 

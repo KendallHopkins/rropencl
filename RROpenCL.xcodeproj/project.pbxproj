@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		BE55CEB6130F365400058186 /* helloworld.cl in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE737C11130EF08800C2AD29 /* helloworld.cl */; };
 		BE55CEB7130F365700058186 /* helloworld in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE737C13130EF12400C2AD29 /* helloworld */; };
+		BE55CEBA130F4F2F00058186 /* RRCLEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = BE55CEB8130F4F2B00058186 /* RRCLEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE55CEBB130F4F2F00058186 /* RRCLEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = BE55CEB9130F4F2C00058186 /* RRCLEvent.m */; };
+		BE55CEBE130F854E00058186 /* RRCLException.h in Headers */ = {isa = PBXBuildFile; fileRef = BE55CEBC130F854800058186 /* RRCLException.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE55CEBF130F854E00058186 /* RRCLException.m in Sources */ = {isa = PBXBuildFile; fileRef = BE55CEBD130F854900058186 /* RRCLException.m */; };
 		BE737C1A130EF2D500C2AD29 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEBDE386130ED84B00B603CD /* Foundation.framework */; };
 		BE737C1D130EF2D500C2AD29 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE737C1C130EF2D500C2AD29 /* main.m */; };
 		BE737C24130EF31B00C2AD29 /* RROpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEBDE33F130ED81700B603CD /* RROpenCL.framework */; };
@@ -69,6 +73,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BE55CEB8130F4F2B00058186 /* RRCLEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RRCLEvent.h; sourceTree = "<group>"; usesTabs = 1; };
+		BE55CEB9130F4F2C00058186 /* RRCLEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RRCLEvent.m; sourceTree = "<group>"; usesTabs = 1; };
+		BE55CEBC130F854800058186 /* RRCLException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RRCLException.h; sourceTree = "<group>"; usesTabs = 1; };
+		BE55CEBD130F854900058186 /* RRCLException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RRCLException.m; sourceTree = "<group>"; usesTabs = 1; };
 		BE737C11130EF08800C2AD29 /* helloworld.cl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.opencl; path = helloworld.cl; sourceTree = "<group>"; };
 		BE737C13130EF12400C2AD29 /* helloworld */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = helloworld; sourceTree = "<group>"; };
 		BE737C18130EF2D500C2AD29 /* RROpenCLCompiler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RROpenCLCompiler; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -195,6 +203,10 @@
 				BEBDE376130ED82600B603CD /* RRCLKernel.m */,
 				BEBDE377130ED82600B603CD /* RRCLBuffer.h */,
 				BEBDE378130ED82600B603CD /* RRCLBuffer.m */,
+				BE55CEB8130F4F2B00058186 /* RRCLEvent.h */,
+				BE55CEB9130F4F2C00058186 /* RRCLEvent.m */,
+				BE55CEBC130F854800058186 /* RRCLException.h */,
+				BE55CEBD130F854900058186 /* RRCLException.m */,
 				BEBDE349130ED81700B603CD /* Supporting Files */,
 			);
 			path = RROpenCL;
@@ -246,6 +258,8 @@
 				BEBDE380130ED82600B603CD /* RRCLProgram.h in Headers */,
 				BEBDE382130ED82600B603CD /* RRCLKernel.h in Headers */,
 				BEBDE384130ED82600B603CD /* RRCLBuffer.h in Headers */,
+				BE55CEBA130F4F2F00058186 /* RRCLEvent.h in Headers */,
+				BE55CEBE130F854E00058186 /* RRCLException.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,6 +403,8 @@
 				BEBDE381130ED82600B603CD /* RRCLProgram.m in Sources */,
 				BEBDE383130ED82600B603CD /* RRCLKernel.m in Sources */,
 				BEBDE385130ED82600B603CD /* RRCLBuffer.m in Sources */,
+				BE55CEBB130F4F2F00058186 /* RRCLEvent.m in Sources */,
+				BE55CEBF130F854E00058186 /* RRCLException.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

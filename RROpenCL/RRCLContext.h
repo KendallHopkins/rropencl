@@ -51,19 +51,17 @@
  */
 @interface RRCLContext : NSObject
 {
-	cl_context context;
+	cl_context clContext;
 }
 
-- (id)initWithDevices:(NSArray *)deviceIDs;
+- (id)initWithDevices:(NSArray *)devices;
 
 - (RRCLCommandQueue *)commandQueueForDevice:(RRCLDevice *)aDevice;
-
-- (RRCLProgram *)programWithSource:(NSString *)source;
 
 - (RRCLBuffer *)readWriteBufferWithSize:(size_t)size;
 - (RRCLBuffer *)writeOnlyBufferWithSize:(size_t)size;
 - (RRCLBuffer *)readOnlyBufferWithSize:(size_t)size;
 
-- (cl_context)context;
+- (cl_context)clContext;
 
 @end
