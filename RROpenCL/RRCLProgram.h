@@ -34,8 +34,6 @@
 	cl_program program;
 }
 
-+ (RRCLProgram *)wrapperForProgram:(cl_program)program;
-
 - (id)initWithSource:(NSString *)source inContext:(RRCLContext *)aContext;
 - (id)initWithBinarys:(NSArray *)binarys forDevices:(NSArray *)devices inContext:(RRCLContext *)aContext;
 
