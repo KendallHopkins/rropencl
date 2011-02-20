@@ -93,7 +93,7 @@
 	[super finalize];
 }
 
-- (cl_int)build
+- (void)build
 {
 	cl_int errorCode = clBuildProgram(clProgram, 0, NULL, "", NULL, NULL);
 	if (CL_SUCCESS != errorCode)
