@@ -68,7 +68,7 @@
 
 - (NSData *)enqueueReadBuffer:(RRCLBuffer *)aBuffer blocking:(cl_bool)blocking offset:(size_t)offset length:(size_t)cb
 {
-	NSMutableData *data = [NSMutableData dataWithLength:cb];
+	NSMutableData * data = [NSMutableData dataWithLength:cb];
 	cl_int errorCode = clEnqueueReadBuffer(clCommandQueue, [aBuffer clMem], blocking, offset, cb, [data mutableBytes], 0, NULL, NULL);
 	if (CL_SUCCESS != errorCode)
 		[RRCLException raiseWithErrorCode:errorCode];

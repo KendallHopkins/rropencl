@@ -38,8 +38,7 @@
 - (id)initWithContext:(RRCLContext *)aContext flags:(cl_mem_flags)flags size:(size_t)size_ hostPtr:(void *)hostPtr
 {
 	self = [super init];
-	if (self)
-	{
+	if (self) {
 		cl_int errcode;
 		size = size_;
 		clMem = clCreateBuffer([aContext clContext], flags, size, hostPtr, &errcode);
