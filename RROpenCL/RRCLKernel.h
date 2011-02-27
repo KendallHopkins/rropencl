@@ -28,6 +28,7 @@
 
 @class RRCLBuffer;
 @class RRCLProgram;
+@class RRCLDevice;
 
 @interface RRCLKernel : NSObject
 {
@@ -38,6 +39,7 @@
 
 - (void)setArg:(NSUInteger)argIndex toData:(NSData *)aData;
 - (void)setArg:(NSUInteger)argIndex toBuffer:(RRCLBuffer *)aBuffer;
+- (void)setArg:(NSUInteger)argIndex toShareWithSize:(NSNumber *)shareSize;
 - (void)setArgArray:(NSArray *)argArray;
 
 //------------------------------------------------------------------------- Info
@@ -47,7 +49,7 @@
 
 //-------------------------------------------------------------- Work Group Info
 
-- (size_t)workGroupSizeForDeviceID:(cl_device_id)deviceID;
+- (size_t)workGroupSizeForDevice:(RRCLDevice *)device;
 
 - (cl_kernel)clKernel;
 

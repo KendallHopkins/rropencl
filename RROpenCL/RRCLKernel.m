@@ -26,6 +26,7 @@
 #import "RRCLBuffer.h"
 #import "RRCLProgram.h"
 #import "RRCLException.h"
+#import "RRCLDevice.h"
 
 @interface RRCLKernel ()
 
@@ -86,6 +87,11 @@
 	[self setArg:argIndex toValue:&mem withSize:sizeof(mem)];
 }
 
+- (void)setArg:(NSUInteger)argIndex toShareWithSize:(NSNumber *)shareSize
+{
+	[self setArg:argIndex toValue:NULL withSize:(size_t)[shareSize unsignedIntValue]];
+}
+
 - (void)setArgArray:(NSArray *)argArray
 {
 	NSUInteger argArrayCount = [argArray count];
@@ -136,10 +142,10 @@
 #pragma mark													 Work Group Info
 //------------------------------------------------------------------------------
 
-- (size_t)workGroupSizeForDeviceID:(cl_device_id)deviceID
+- (size_t)workGroupSizeForDevice:(RRCLDevice *)device
 {
 	size_t size;
-	cl_int errorCode = clGetKernelWorkGroupInfo(clKernel, deviceID, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size), &size, NULL);
+	cl_int errorCode = clGetKernelWorkGroupInfo(clKernel, [device clDeviceId], CL_KERNEL_WORK_GROUP_SIZE, sizeof(size), &size, NULL);
 	if (CL_SUCCESS != errorCode)
 		[RRCLException raiseWithErrorCode:errorCode];
 	
