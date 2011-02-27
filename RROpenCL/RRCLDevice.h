@@ -32,6 +32,7 @@
 }
 
 + (RRCLDevice *)defaultDevice;
++ (RRCLDevice *)defaultDeviceOfType:(cl_device_type)deviceType;
 
 + (NSArray *)devicesForPlatform:(cl_platform_id)platformID type:(cl_device_type)deviceType;
 // Argument deviceType specifies a bit mask describing which types of

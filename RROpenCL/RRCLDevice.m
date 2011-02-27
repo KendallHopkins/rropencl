@@ -43,6 +43,13 @@
 	return defaultDevice;
 }
 
++ (RRCLDevice *)defaultDeviceOfType:(cl_device_type)deviceType
+{
+	NSArray * deviceArray = [self devicesForPlatform:NULL type:deviceType];
+	RRCLDevice * defaultDevice = [deviceArray objectAtIndex:0];
+	return defaultDevice;
+}
+
 + (NSArray *)devicesForPlatform:(cl_platform_id)platformID type:(cl_device_type)deviceType
 {
 	cl_uint count;
