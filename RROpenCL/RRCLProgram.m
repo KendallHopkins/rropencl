@@ -102,7 +102,7 @@
 
 - (void)buildWithIncludeFolder:(NSString *)includePath
 {
-	NSString * includeString = [NSString stringWithFormat:@"-I '%@'", includePath];
+	NSString * includeString = [NSString stringWithFormat:@"-I %@", includePath];
 	cl_int errorCode = clBuildProgram(clProgram, 0, NULL, [includeString UTF8String], NULL, NULL);
 	if (CL_SUCCESS != errorCode)
 		[RRCLException raiseWithErrorCode:errorCode];

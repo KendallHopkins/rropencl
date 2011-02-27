@@ -38,7 +38,7 @@
 - (id)initWithBinarys:(NSArray *)binarys forDevices:(NSArray *)devices inContext:(RRCLContext *)aContext;
 
 - (void)build;
-- (void)buildWithIncludeFolder:(NSString *)includePath;
+- (void)buildWithIncludePath:(NSString *)includePath;
 
 	// Building a program answers the build error code.
 - (NSArray *)binarys;
