@@ -48,11 +48,7 @@ int main (int argc, char * argv[])
 	NSError * error = nil;
 	NSString * program_data = [NSString stringWithContentsOfFile:clFilePath encoding:NSASCIIStringEncoding error:&error];
 	RRCLProgram * program = [[[RRCLProgram alloc] initWithSource:program_data inContext:context] autorelease];
-	cl_int build_code = [program build];
-	if( build_code ) {
-		NSLog(@"Fail to build helloworld.cl");
-		return 1;
-	}
+	[program build];
 
 	if( ! [[NSFileManager defaultManager] createDirectoryAtPath:outFolderPath withIntermediateDirectories:YES attributes:nil error:nil] ) {
 		NSLog(@"Fail to create directory %@", outFolderPath);		 

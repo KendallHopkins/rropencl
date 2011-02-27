@@ -44,11 +44,7 @@
 	NSError * error = nil;
 	NSString * program_data = [NSString stringWithContentsOfFile:[[NSBundle bundleForClass:[self class]] pathForResource:@"helloworld" ofType:@"cl"] encoding:NSASCIIStringEncoding error:&error];
 	RRCLProgram * programFromSource = [[[RRCLProgram alloc] initWithSource:program_data inContext:context] autorelease];
-	cl_int build_code = [programFromSource build];
-	if( build_code ) {
-		STFail(@"Fail to build helloworld.cl");
-		return;
-	}
+	[programFromSource build];
 	
 	NSArray * binarys = [programFromSource binarys];
 	RRCLProgram * programFromBinary = [[RRCLProgram alloc] initWithBinarys:binarys forDevices:[NSArray arrayWithObject:mainDevice] inContext:context];
@@ -62,11 +58,7 @@
 	NSError * error = nil;
 	NSString * program_data = [NSString stringWithContentsOfFile:[[NSBundle bundleForClass:[self class]] pathForResource:@"helloworld" ofType:@"cl"] encoding:NSASCIIStringEncoding error:&error];
 	RRCLProgram * programFromSource = [[[RRCLProgram alloc] initWithSource:program_data inContext:context] autorelease];
-	cl_int build_code = [programFromSource build];
-	if( build_code ) {
-		STFail(@"Fail to build helloworld.cl");
-		return;
-	}
+	[programFromSource build];
 	RRCLKernel * addKernel = [[[RRCLKernel alloc] initWithKernelName:@"add" inProgram:programFromSource] autorelease];
 	[self _testAddKernel:addKernel];
 }
@@ -75,11 +67,8 @@
 {
 	NSArray * binarys = [NSArray arrayWithObject:[NSData dataWithContentsOfFile:[[NSBundle bundleForClass:[self class]] pathForResource:@"helloworld" ofType:nil]]];
 	RRCLProgram * programFromBinary = [[[RRCLProgram alloc] initWithBinarys:binarys forDevices:[NSArray arrayWithObject:mainDevice] inContext:context] autorelease];
-	cl_int build_code = [programFromBinary build];
-	if( build_code ) {
-		STFail(@"Fail to build helloworld.cl");
-		return;
-	}
+	[programFromBinary build];
+	
 	RRCLKernel * addKernel = [[[RRCLKernel alloc] initWithKernelName:@"add" inProgram:programFromBinary] autorelease];;
 	[self _testAddKernel:addKernel];
 }

@@ -38,6 +38,8 @@
 - (id)initWithBinarys:(NSArray *)binarys forDevices:(NSArray *)devices inContext:(RRCLContext *)aContext;
 
 - (void)build;
+- (void)buildWithIncludeFolder:(NSString *)includePath;
+
 	// Building a program answers the build error code.
 - (NSArray *)binarys;
 	// Returns an array of NSData containing the binarys for each device in the program's context
